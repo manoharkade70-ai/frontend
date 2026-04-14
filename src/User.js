@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const BASE_URL = "https://backend-osy4.onrender.com";
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 function User() {
   const [name, setName] = useState("");
