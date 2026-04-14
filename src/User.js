@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
+console.log("TOKEN FROM URL:", getToken());
+
 function User() {
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
@@ -19,9 +21,12 @@ useEffect(() => {
 }, []);
 
   const getToken = () => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get("token")?.trim().toUpperCase();
-  };
+  const hash = window.location.hash;
+
+  const params = new URLSearchParams(hash.split("?")[1]);
+
+  return params.get("token")?.trim().toUpperCase();
+};
 
   const redeem = async () => {
     const token = getToken();
