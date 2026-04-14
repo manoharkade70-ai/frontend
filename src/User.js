@@ -23,7 +23,10 @@ useEffect(() => {
   const getToken = () => {
   const hash = window.location.hash;
 
-  const params = new URLSearchParams(hash.split("?")[1]);
+  if (!hash.includes("?")) return null;
+
+  const queryString = hash.split("?")[1];
+  const params = new URLSearchParams(queryString);
 
   return params.get("token")?.trim().toUpperCase();
 };
