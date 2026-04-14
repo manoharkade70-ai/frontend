@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-console.log("BASE URL:", BASE_URL);
 
 function Admin() {
   const [value, setValue] = useState("");
