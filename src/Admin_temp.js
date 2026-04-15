@@ -5,10 +5,10 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 function Admin() {
   const [value, setValue] = useState("");
+  const [count, setCount] = useState(1);
   const [tokens, setTokens] = useState([]);
   const [qrImage, setQrImage] = useState("");
   const [mobile, setMobile] = useState("");
-
   const [isAuth, setIsAuth] = useState(false);
   const [password, setPassword] = useState("");
 
@@ -28,16 +28,21 @@ const login = () => {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ value })
+      body: JSON.stringify({
+  value,
+  count
+})
     });
 
     const data = await res.json();
 
     alert(data.message);
 
-    if (data.qr) {
-      setQrImage(data.qr);
-    }
+    setQrImage("");
+
+if (data.qrCodes) {
+  setTokens(data.qrCodes);
+}
 
     loadTokens();
   };
@@ -109,6 +114,13 @@ const login = () => {
         onChange={(e) => setValue(e.target.value)}
       /><br /><br />
 
+      <br /><br />
+
+<input
+  placeholder="Number of Tokens"
+  onChange={(e) => setCount(e.target.value)}
+/>
+
       <button
         onClick={createToken}
         style={{
@@ -123,33 +135,33 @@ const login = () => {
       </button>
 
       {/* 🔥 QR DISPLAY */}
-      {qrImage && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Generated QR</h3>
+      {tokens.map((t, i) => (
+  <div key={i} style={{ marginTop: "20px" }}>
+    <p>{t.tokenId}</p>
 
-          <img
-            src={qrImage}
-            alt="QR"
-            style={{ width: "200px", marginBottom: "10px" }}
-          />
+    <img
+      src={t.qr}
+      alt="QR"
+      style={{ width: "150px" }}
+    />
 
-          <br />
+    <br />
 
-          <a
-            href={qrImage}
-            download="qr-code.png"
-            style={{
-              padding: "8px 15px",
-              backgroundColor: "#007BFF",
-              color: "white",
-              textDecoration: "none",
-              borderRadius: "5px"
-            }}
-          >
-            Download QR
-          </a>
-        </div>
-      )}
+    <a
+      href={t.qr}
+      download={`qr-${t.tokenId}.png`}
+      style={{
+        padding: "6px 12px",
+        backgroundColor: "#007BFF",
+        color: "white",
+        textDecoration: "none",
+        borderRadius: "5px"
+      }}
+    >
+      Download
+    </a>
+  </div>
+))}
 
       {/* 🔥 CLEAR WALLET */}
       <h2 style={{ marginTop: "30px" }}>Clear Customer Wallet</h2>
