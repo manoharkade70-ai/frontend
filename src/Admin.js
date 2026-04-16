@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -7,6 +7,8 @@ function Admin() {
   const [count, setCount] = useState(1);
   const [password, setPassword] = useState("");
   const [isAuth, setIsAuth] = useState(false);
+  const [tokens, setTokens] = useState([]);
+  const [mobile, setMobile] = useState("");
 
   const login = () => {
     if (password === "admin123") setIsAuth(true);
@@ -16,20 +18,42 @@ function Admin() {
   const generateZip = async () => {
     const res = await fetch(`${BASE_URL}/create-token`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ value, count })
     });
 
     const blob = await res.blob();
-
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "qrcodes.zip";
     a.click();
+
+    loadTokens();
   };
+
+  const loadTokens = async () => {
+    const res = await fetch(`${BASE_URL}/all-tokens`);
+    const data = await res.json();
+    setTokens(data);
+  };
+
+  const clearWallet = async () => {
+    const res = await fetch(`${BASE_URL}/clear-wallet`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ mobile })
+    });
+
+    const data = await res.json();
+    alert(data.message);
+  };
+
+  useEffect(() => {
+    loadTokens();
+  }, []);
 
   if (!isAuth) {
     return (
@@ -43,8 +67,15 @@ function Admin() {
   }
 
   return (
-    <div style={{ maxWidth: "500px", margin: "auto", padding: "20px" }}>
+    <div style={{ maxWidth: "700px", margin: "auto", padding: "20px" }}>
       <h1>⚙️ Admin Panel</h1>
+
+      <button
+        onClick={() => window.open(`${BASE_URL}/export-users`)}
+        style={{ background: "green", color: "white", padding: "10px", marginBottom: "20px" }}
+      >
+        Export Excel
+      </button>
 
       <input
         placeholder="Enter Value"
@@ -60,15 +91,32 @@ function Admin() {
 
       <button
         onClick={generateZip}
-        style={{
-          width: "100%",
-          padding: "12px",
-          background: "blue",
-          color: "white"
-        }}
+        style={{ width: "100%", padding: "12px", background: "blue", color: "white" }}
       >
         Generate & Download ZIP
       </button>
+
+      <h3 style={{ marginTop: "30px" }}>Clear Wallet</h3>
+      <input
+        placeholder="Enter Mobile"
+        onChange={(e) => setMobile(e.target.value)}
+        style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+      />
+
+      <button
+        onClick={clearWallet}
+        style={{ width: "100%", padding: "10px", background: "red", color: "white" }}
+      >
+        Clear Wallet
+      </button>
+
+      <h3 style={{ marginTop: "30px" }}>All Tokens</h3>
+
+      {tokens.map((t, i) => (
+        <div key={i}>
+          {t.tokenId} - ₹{t.value} - {t.used ? "✅ Used" : "❌ Unused"}
+        </div>
+      ))}
     </div>
   );
 }
