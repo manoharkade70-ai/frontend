@@ -16,19 +16,21 @@ function Admin() {
   };
 
   const generateZip = async () => {
+    if (!value || !count || isNaN(value) || isNaN(count)) {
+      alert("Please enter valid value and count");
+      return;
+    }
     const res = await fetch(`${BASE_URL}/create-token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ value, count })
     });
-
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "qrcodes.zip";
     a.click();
-
     loadTokens();
   };
 
@@ -41,12 +43,9 @@ function Admin() {
   const clearWallet = async () => {
     const res = await fetch(`${BASE_URL}/clear-wallet`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mobile })
     });
-
     const data = await res.json();
     alert(data.message);
   };
