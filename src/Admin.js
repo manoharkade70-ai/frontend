@@ -113,20 +113,21 @@ function Admin() {
       <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
         <input placeholder="Value" onChange={(e) => setValue(e.target.value)} />
         <input placeholder="Count" onChange={(e) => setCount(e.target.value)} />
-        <button onClick={generateZip}>
+        <button onClick={generateZip}
           style={{
           background: "blue",
           color: "white",
           padding: "10px",
           marginBottom: "20px"
         }}
+        >
           Generate & Download
           </button>
       </div>
 
       <h3>Clear Wallet</h3>
       <input placeholder="Mobile" onChange={(e) => setMobile(e.target.value)} />
-      <button onClick={clearWallet}>
+      <button onClick={clearWallet}
 
         style={{
           background: "red",
@@ -134,8 +135,8 @@ function Admin() {
           padding: "10px",
           marginBottom: "20px"
         }}
-        
-        Clear
+        >
+        Clear Wallet
         </button>
 
       <h3>Tokens by Date</h3>
