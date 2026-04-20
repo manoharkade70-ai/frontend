@@ -13,29 +13,35 @@ function Admin() {
 
   // 🔐 LOGIN
   const handleLogin = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/admin-login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ password })
-      });
+  try {
+    const res = await fetch(`${BASE_URL}/admin-login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ password })
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
-        alert("Wrong password");
-        return;
-      }
+    console.log("LOGIN RESPONSE:", data); // 🔥 DEBUG
 
-      localStorage.setItem("adminToken", data.token);
-      setIsAuth(true);
-    } catch (err) {
-      console.log(err);
-      alert("Login failed");
+    if (!res.ok || !data.token) {
+      alert("Wrong password");
+      return;
     }
-  };
+
+    localStorage.setItem("adminToken", data.token);
+
+    console.log("TOKEN SAVED:", data.token); // 🔥 DEBUG
+
+    setIsAuth(true);
+
+  } catch (err) {
+    console.log(err);
+    alert("Login failed");
+  }
+};
 
   // 🔥 GENERATE QR JOB
   const generateZip = async () => {
