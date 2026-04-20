@@ -95,28 +95,74 @@ function Admin() {
   }
 
   return (
-    <div style={{ maxWidth: "700px", margin: "auto", padding: "20px" }}>
-      <h1>⚙️ Admin Panel</h1>
+  <div style={{
+    maxWidth: "600px",
+    margin: "auto",
+    padding: "20px",
+    fontFamily: "Arial"
+  }}>
+    <h1 style={{ textAlign: "center" }}>⚙️ Admin Panel</h1>
 
-      <input placeholder="Value" onChange={(e) => setValue(e.target.value)} />
-      <input placeholder="Count" onChange={(e) => setCount(e.target.value)} />
-
-      <button onClick={generateZip}>
-        Generate & Download QR
+    <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+      <input
+        placeholder="Value"
+        onChange={(e) => setValue(e.target.value)}
+        style={{ flex: 1, padding: "10px" }}
+      />
+      <input
+        placeholder="Count"
+        onChange={(e) => setCount(e.target.value)}
+        style={{ flex: 1, padding: "10px" }}
+      />
+      <button
+        onClick={generateZip}
+        style={{
+          padding: "10px 15px",
+          background: "blue",
+          color: "white",
+          border: "none",
+          cursor: "pointer"
+        }}
+      >
+        Generate & Download
       </button>
+    </div>
 
-      <h3>Clear Wallet</h3>
-      <input placeholder="Mobile" onChange={(e) => setMobile(e.target.value)} />
-      <button onClick={clearWallet}>Clear Wallet</button>
+    <h3>Clear Wallet</h3>
+    <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+      <input
+        placeholder="Mobile"
+        onChange={(e) => setMobile(e.target.value)}
+        style={{ flex: 1, padding: "10px" }}
+      />
+      <button
+        onClick={clearWallet}
+        style={{
+          padding: "10px",
+          background: "red",
+          color: "white",
+          border: "none"
+        }}
+      >
+        Clear
+      </button>
+    </div>
 
-      <h3>Tokens</h3>
-      {tokens.slice(0, 50).map((t, i) => (
-        <div key={i}>
-          {t.tokenId} - ₹{t.value} - {t.used ? "Used" : "Unused"}
+    <h3>Tokens</h3>
+    <div style={{
+      maxHeight: "300px",
+      overflowY: "scroll",
+      border: "1px solid #ddd",
+      padding: "10px"
+    }}>
+      {tokens.map((t, i) => (
+        <div key={i} style={{ marginBottom: "5px" }}>
+          {t.tokenId} - ₹{t.value} - {t.used ? "✅ Used" : "❌ Unused"}
         </div>
       ))}
     </div>
-  );
+  </div>
+);
 }
 
 export default Admin;
