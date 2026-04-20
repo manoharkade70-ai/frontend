@@ -80,15 +80,47 @@ function Admin() {
   }, [isAuth]);
 
   if (!isAuth) {
-    return (
-      <div style={{ textAlign: "center", marginTop: "100px" }}>
-        <h2>Admin Login</h2>
-        <input type="password" onChange={(e) => setPassword(e.target.value)} />
-        <br /><br />
-        <button onClick={handleLogin}>Login</button>
-      </div>
-    );
-  }
+  return (
+    <div
+      style={{
+        textAlign: "center",
+        marginTop: "120px",
+        fontFamily: "Arial"
+      }}
+    >
+      <h2>🔐 Admin Login</h2>
+
+      <input
+        type="password"
+        placeholder="Enter password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        style={{
+          padding: "10px",
+          width: "220px",
+          marginTop: "10px",
+          border: "1px solid #ccc",
+          outline: "none"
+        }}
+      />
+
+      <br /><br />
+
+      <button
+        onClick={handleLogin}
+        style={{
+          padding: "10px 20px",
+          background: "blue",
+          color: "white",
+          border: "none",
+          cursor: "pointer"
+        }}
+      >
+        Login
+      </button>
+    </div>
+  );
+}
 
   return (
     <div style={{ maxWidth: "600px", margin: "auto", padding: "20px" }}>
