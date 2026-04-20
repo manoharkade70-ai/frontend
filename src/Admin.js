@@ -8,6 +8,7 @@ function Admin() {
   const [password, setPassword] = useState("");
   const [isAuth, setIsAuth] = useState(false);
   const [groupedTokens, setGroupedTokens] = useState({});
+  const [openDate, setOpenDate] = useState(null);
   const [mobile, setMobile] = useState("");
 
   const handleLogin = async () => {
@@ -141,16 +142,46 @@ function Admin() {
 
       <h3>Tokens by Date</h3>
 
-      {Object.keys(groupedTokens).map(date => (
-        <div key={date}>
-          <h4>{date}</h4>
-          {groupedTokens[date].map((t, i) => (
-            <div key={i}>
-              {t.tokenId} - ₹{t.value} - {t.used ? "✅ Used" : "❌ Unused"}
-            </div>
-          ))}
-        </div>
-      ))}
+{Object.keys(groupedTokens)
+  .sort((a, b) => new Date(b) - new Date(a))
+  .map(date => (
+    <div key={date} style={{ marginBottom: "10px" }}>
+
+    {/* DATE BAR */}
+    <div
+      onClick={() => setOpenDate(openDate === date ? null : date)}
+      style={{
+        background: "#eee",
+        padding: "10px",
+        cursor: "pointer",
+        fontWeight: "bold",
+        border: "1px solid #ccc"
+      }}
+    >
+      {date} {openDate === date ? "▼" : "▶"}
+    </div>
+
+    {/* TOKENS LIST */}
+    {openDate === date && (
+      <div
+        style={{
+          maxHeight: "200px",
+          overflowY: "auto",
+          border: "1px solid #ddd",
+          padding: "10px",
+          background: "#fafafa"
+        }}
+      >
+        {groupedTokens[date].map((t, i) => (
+          <div key={i} style={{ marginBottom: "5px" }}>
+            {t.tokenId} - ₹{t.value} - {t.used ? "✅ Used" : "❌ Unused"}
+          </div>
+        ))}
+      </div>
+    )}
+
+  </div>
+))}
     </div>
   );
 }
