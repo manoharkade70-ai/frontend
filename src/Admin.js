@@ -13,23 +13,28 @@ function Admin() {
 
   // 🔐 LOGIN
   const handleLogin = async () => {
-    const res = await fetch(`${BASE_URL}/admin-login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ password })
-    });
+    try {
+      const res = await fetch(`${BASE_URL}/admin-login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ password })
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (res.status !== 200) {
-      alert("Wrong password");
-      return;
+      if (!res.ok) {
+        alert("Wrong password");
+        return;
+      }
+
+      localStorage.setItem("adminToken", data.token);
+      setIsAuth(true);
+    } catch (err) {
+      console.log(err);
+      alert("Login failed");
     }
-
-    localStorage.setItem("adminToken", data.token);
-    setIsAuth(true);
   };
 
   // 🔥 GENERATE QR JOB
@@ -39,71 +44,100 @@ function Admin() {
       return;
     }
 
-    const res = await fetch(`${BASE_URL}/create-token`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-admin-key": localStorage.getItem("adminToken")
-      },
-      body: JSON.stringify({ value, count })
-    });
+    try {
+      const res = await fetch(`${BASE_URL}/create-token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-key": localStorage.getItem("adminToken")
+        },
+        body: JSON.stringify({ value, count })
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      alert(data.message);
+      if (!res.ok) {
+        alert(data.message);
+        return;
+      }
+
+      setJobId(data.jobId);
+      alert("QR generation started");
+    } catch (err) {
+      console.log(err);
+      alert("Failed to start job");
+    }
+  };
+
+  // 🔁 CHECK STATUS + DOWNLOAD
+  const checkStatus = async () => {
+    if (!jobId) {
+      alert("No job running");
       return;
     }
 
-    setJobId(data.jobId);
-    alert("QR generation started");
-  };
+    try {
+      const res = await fetch(`${BASE_URL}/job-status/${jobId}`);
+      const data = await res.json();
 
-  // 🔁 CHECK JOB STATUS
-  const checkStatus = async () => {
-    if (!jobId) return;
-
-    const res = await fetch(`${BASE_URL}/job-status/${jobId}`);
-    const data = await res.json();
-
-    if (data.status === "completed") {
-      window.open(`${BASE_URL}/download/${jobId}`);
-      setJobId(null);
-      loadTokens();
-    } else {
-      alert("Still processing...");
+      if (data.status === "completed") {
+        window.open(`${BASE_URL}/download/${jobId}`);
+        setJobId(null);
+        loadTokens();
+      } else {
+        alert("Still processing...");
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  // 📥 LOAD TOKENS
+  // 📥 LOAD TOKENS (SAFE)
   const loadTokens = async () => {
-    const res = await fetch(`${BASE_URL}/all-tokens`, {
-      headers: {
-        "x-admin-key": localStorage.getItem("adminToken")
-      }
-    });
+    try {
+      const res = await fetch(`${BASE_URL}/all-tokens`, {
+        headers: {
+          "x-admin-key": localStorage.getItem("adminToken")
+        }
+      });
 
-    const data = await res.json();
-    setTokens(data);
+      const data = await res.json();
+
+      if (Array.isArray(data)) {
+        setTokens(data);
+      } else {
+        console.log("Unexpected response:", data);
+        setTokens([]);
+      }
+    } catch (err) {
+      console.log("Error loading tokens:", err);
+      setTokens([]);
+    }
   };
 
   // 🧹 CLEAR WALLET
   const clearWallet = async () => {
-    const res = await fetch(`${BASE_URL}/clear-wallet`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-admin-key": localStorage.getItem("adminToken")
-      },
-      body: JSON.stringify({ mobile })
-    });
+    try {
+      const res = await fetch(`${BASE_URL}/clear-wallet`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-key": localStorage.getItem("adminToken")
+        },
+        body: JSON.stringify({ mobile })
+      });
 
-    const data = await res.json();
-    alert(data.message);
+      const data = await res.json();
+      alert(data.message);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
-    if (isAuth) loadTokens();
+    if (isAuth) {
+      loadTokens();
+    }
   }, [isAuth]);
 
   // 🔐 LOGIN UI
@@ -128,11 +162,7 @@ function Admin() {
       <h1>⚙️ Admin Panel</h1>
 
       <button
-        onClick={() =>
-          window.open(
-            `${BASE_URL}/export-users?key=${localStorage.getItem("adminToken")}`
-          )
-        }
+        onClick={() => alert("Export disabled for now")}
         style={{
           background: "green",
           color: "white",
@@ -202,11 +232,12 @@ function Admin() {
 
       <h3 style={{ marginTop: "30px" }}>All Tokens</h3>
 
-      {tokens.slice(0, 100).map((t, i) => (
-        <div key={i}>
-          {t.tokenId} - ₹{t.value} - {t.used ? "✅ Used" : "❌ Unused"}
-        </div>
-      ))}
+      {Array.isArray(tokens) &&
+        tokens.slice(0, 100).map((t, i) => (
+          <div key={i}>
+            {t.tokenId} - ₹{t.value} - {t.used ? "✅ Used" : "❌ Unused"}
+          </div>
+        ))}
     </div>
   );
 }
