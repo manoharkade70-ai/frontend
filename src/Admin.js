@@ -111,43 +111,58 @@ function Admin() {
         Export Excel
       </button>
 
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <input
-  placeholder="Value"
-  onChange={(e) => setValue(e.target.value)}
-  style={{ width: "50px", padding: "4px" }}
-/>
-        <input
-  placeholder="Count"
-  onChange={(e) => setCount(e.target.value)}
-  style={{ width: "50px", padding: "4px" }}
-/>
-        <button onClick={generateZip}
-          style={{
-          background: "blue",
-          color: "white",
-          padding: "10px",
-          marginBottom: "20px"
-        }}
-        >
-        
-          Generate & Download
-          </button>
-      </div>
+     <div style={{ marginBottom: "20px" }}>
+  <input
+    placeholder="Value"
+    onChange={(e) => setValue(e.target.value)}
+    style={{ width: "100px", padding: "8px", marginRight: "10px" }}
+  />
+
+  <input
+    placeholder="Count"
+    onChange={(e) => setCount(e.target.value)}
+    style={{ width: "100px", padding: "8px" }}
+  />
+
+  <br /><br />
+
+  <button
+    onClick={generateZip}
+    style={{
+      padding: "10px 15px",
+      background: "blue",
+      color: "white",
+      border: "black",
+      cursor: "pointer"
+    }}
+  >
+    Generate & Download
+  </button>
+</div>
 
       <h3>Clear Wallet</h3>
-      <input placeholder="Mobile" onChange={(e) => setMobile(e.target.value)} />
-      <button onClick={clearWallet}
 
-        style={{
-          background: "red",
-          color: "white",
-          padding: "10px",
-          marginBottom: "20px"
-        }}
-        >
-        Clear Wallet
-        </button>
+<div style={{ marginBottom: "20px" }}>
+  <input
+    placeholder="Mobile"
+    onChange={(e) => setMobile(e.target.value)}
+    style={{ width: "200px", padding: "8px" }}
+  />
+
+  <br /><br />
+
+  <button
+    onClick={clearWallet}
+    style={{
+      padding: "10px",
+      background: "red",
+      color: "white",
+      border: "black"
+    }}
+  >
+    Clear Wallet
+  </button>
+</div>
 
       <h3>Tokens by Date</h3>
 
