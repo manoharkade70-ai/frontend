@@ -10,10 +10,26 @@ function Admin() {
   const [tokens, setTokens] = useState([]);
   const [mobile, setMobile] = useState("");
 
-  const login = () => {
-    if (password === "admin123") setIsAuth(true);
-    else alert("Wrong password");
-  };
+  const handleLogin = async () => {
+  const res = await fetch("https://https://backend-osy4.onrender.com/admin-login", {
+    method: "POST",
+    headers: {
+  "Content-Type": "application/json",
+  "x-admin-key": localStorage.getItem("adminToken")
+},
+    body: JSON.stringify({ password })
+  });
+
+  const data = await res.json();
+
+  if (res.status !== 200) {
+    alert("Wrong password");
+    return;
+  }
+
+  localStorage.setItem("adminToken", data.token);
+  setLoggedIn(true);
+};
 
   const generateZip = async () => {
     if (!value || !count || isNaN(value) || isNaN(count)) {
@@ -21,10 +37,13 @@ function Admin() {
       return;
     }
     const res = await fetch(`${BASE_URL}/create-token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ value, count })
-    });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "x-admin-key": localStorage.getItem("adminToken")
+  },
+  body: JSON.stringify({ value, count })
+});
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -43,7 +62,10 @@ function Admin() {
   const clearWallet = async () => {
     const res = await fetch(`${BASE_URL}/clear-wallet`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+  "Content-Type": "application/json",
+  "x-admin-key": localStorage.getItem("adminToken")
+},
       body: JSON.stringify({ mobile })
     });
     const data = await res.json();
