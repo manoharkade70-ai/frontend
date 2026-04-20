@@ -7,15 +7,13 @@ function Admin() {
   const [count, setCount] = useState(1);
   const [password, setPassword] = useState("");
   const [isAuth, setIsAuth] = useState(false);
-  const [tokens, setTokens] = useState([]);
+  const [groupedTokens, setGroupedTokens] = useState({});
   const [mobile, setMobile] = useState("");
 
   const handleLogin = async () => {
     const res = await fetch(`${BASE_URL}/admin-login`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password })
     });
 
@@ -40,11 +38,6 @@ function Admin() {
       body: JSON.stringify({ value, count })
     });
 
-    if (!res.ok) {
-      alert("Failed to generate QR");
-      return;
-    }
-
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
 
@@ -52,17 +45,19 @@ function Admin() {
     a.href = url;
     a.download = "qrcodes.zip";
     a.click();
+
+    loadGroupedTokens(); // refresh
   };
 
-  const loadTokens = async () => {
-    const res = await fetch(`${BASE_URL}/all-tokens`, {
+  const loadGroupedTokens = async () => {
+    const res = await fetch(`${BASE_URL}/tokens-by-date`, {
       headers: {
         "x-admin-key": localStorage.getItem("adminToken")
       }
     });
 
     const data = await res.json();
-    setTokens(Array.isArray(data) ? data : []);
+    setGroupedTokens(data);
   };
 
   const clearWallet = async () => {
@@ -80,7 +75,7 @@ function Admin() {
   };
 
   useEffect(() => {
-    if (isAuth) loadTokens();
+    if (isAuth) loadGroupedTokens();
   }, [isAuth]);
 
   if (!isAuth) {
@@ -95,74 +90,50 @@ function Admin() {
   }
 
   return (
-  <div style={{
-    maxWidth: "600px",
-    margin: "auto",
-    padding: "20px",
-    fontFamily: "Arial"
-  }}>
-    <h1 style={{ textAlign: "center" }}>⚙️ Admin Panel</h1>
+    <div style={{ maxWidth: "600px", margin: "auto", padding: "20px" }}>
+      <h1 style={{ textAlign: "center" }}>⚙️ Admin Panel</h1>
 
-    <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-      <input
-        placeholder="Value"
-        onChange={(e) => setValue(e.target.value)}
-        style={{ flex: 1, padding: "10px" }}
-      />
-      <input
-        placeholder="Count"
-        onChange={(e) => setCount(e.target.value)}
-        style={{ flex: 1, padding: "10px" }}
-      />
+      {/* ✅ Excel Button */}
       <button
-        onClick={generateZip}
+        onClick={() =>
+          window.open(
+            `${BASE_URL}/export-users?key=${localStorage.getItem("adminToken")}`
+          )
+        }
         style={{
-          padding: "10px 15px",
-          background: "blue",
+          background: "green",
           color: "white",
-          border: "none",
-          cursor: "pointer"
-        }}
-      >
-        Generate & Download
-      </button>
-    </div>
-
-    <h3>Clear Wallet</h3>
-    <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-      <input
-        placeholder="Mobile"
-        onChange={(e) => setMobile(e.target.value)}
-        style={{ flex: 1, padding: "10px" }}
-      />
-      <button
-        onClick={clearWallet}
-        style={{
           padding: "10px",
-          background: "red",
-          color: "white",
-          border: "none"
+          marginBottom: "20px"
         }}
       >
-        Clear
+        Export Excel
       </button>
-    </div>
 
-    <h3>Tokens</h3>
-    <div style={{
-      maxHeight: "300px",
-      overflowY: "scroll",
-      border: "1px solid #ddd",
-      padding: "10px"
-    }}>
-      {tokens.map((t, i) => (
-        <div key={i} style={{ marginBottom: "5px" }}>
-          {t.tokenId} - ₹{t.value} - {t.used ? "✅ Used" : "❌ Unused"}
+      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+        <input placeholder="Value" onChange={(e) => setValue(e.target.value)} />
+        <input placeholder="Count" onChange={(e) => setCount(e.target.value)} />
+        <button onClick={generateZip}>Generate & Download</button>
+      </div>
+
+      <h3>Clear Wallet</h3>
+      <input placeholder="Mobile" onChange={(e) => setMobile(e.target.value)} />
+      <button onClick={clearWallet}>Clear</button>
+
+      <h3>Tokens by Date</h3>
+
+      {Object.keys(groupedTokens).map(date => (
+        <div key={date}>
+          <h4>{date}</h4>
+          {groupedTokens[date].map((t, i) => (
+            <div key={i}>
+              {t.tokenId} - ₹{t.value} - {t.used ? "✅ Used" : "❌ Unused"}
+            </div>
+          ))}
         </div>
       ))}
     </div>
-  </div>
-);
+  );
 }
 
 export default Admin;
