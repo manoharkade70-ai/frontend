@@ -130,8 +130,8 @@ function Admin() {
           marginBottom: "20px"
         }}
         >
-        <br>
-          Generate & Download</br>
+        
+          Generate & Download
           </button>
       </div>
 
