@@ -115,12 +115,12 @@ function Admin() {
         <input
   placeholder="Value"
   onChange={(e) => setValue(e.target.value)}
-  style={{ width: "100px", padding: "8px" }}
+  style={{ width: "50px", padding: "4px" }}
 />
         <input
   placeholder="Count"
   onChange={(e) => setCount(e.target.value)}
-  style={{ width: "100px", padding: "8px" }}
+  style={{ width: "50px", padding: "4px" }}
 />
         <button onClick={generateZip}
           style={{
@@ -130,7 +130,8 @@ function Admin() {
           marginBottom: "20px"
         }}
         >
-          Generate & Download
+        <br>
+          Generate & Download</br>
           </button>
       </div>
 
