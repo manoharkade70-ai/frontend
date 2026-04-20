@@ -112,7 +112,7 @@ function Admin() {
           padding: "10px 20px",
           background: "blue",
           color: "white",
-          border: "none",
+          border: "black",
           cursor: "pointer"
         }}
       >
