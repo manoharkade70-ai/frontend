@@ -112,8 +112,16 @@ function Admin() {
       </button>
 
       <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <input placeholder="Value" onChange={(e) => setValue(e.target.value)} />
-        <input placeholder="Count" onChange={(e) => setCount(e.target.value)} />
+        <input
+  placeholder="Value"
+  onChange={(e) => setValue(e.target.value)}
+  style={{ width: "100px", padding: "8px" }}
+/>
+        <input
+  placeholder="Count"
+  onChange={(e) => setCount(e.target.value)}
+  style={{ width: "100px", padding: "8px" }}
+/>
         <button onClick={generateZip}
           style={{
           background: "blue",
