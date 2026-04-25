@@ -131,15 +131,40 @@ function Redeem() {
           💰 Wallet Balance: ₹{wallet}
         </h3>
 
-        <h3>History</h3>
+        <h3 style={{ marginTop: "20px" }}>History</h3>
 
-        <div style={{ maxHeight: "150px", overflowY: "auto" }}>
-          {history.map((h, i) => (
-            <div key={i}>
-              ₹{h.value} - {new Date(h.date).toLocaleDateString()}
-            </div>
-          ))}
-        </div>
+<div
+  style={{
+    maxHeight: "180px",
+    overflowY: "auto",
+    border: "1px solid #e0e0e0",
+    borderRadius: "8px",
+    padding: "10px",
+    background: "#fafafa"
+  }}
+>
+  {history.length === 0 ? (
+    <p style={{ color: "#888" }}>No transactions yet</p>
+  ) : (
+    history.map((h, i) => (
+      <div
+        key={i}
+        style={{
+          padding: "8px",
+          borderBottom: "1px solid #eee",
+          display: "flex",
+          justifyContent: "space-between",
+          fontSize: "14px"
+        }}
+      >
+        <span>₹{h.value}</span>
+        <span style={{ color: "#666" }}>
+          {new Date(h.date).toLocaleDateString()}
+        </span>
+      </div>
+    ))
+  )}
+</div>
       </div>
     </div>
   );
