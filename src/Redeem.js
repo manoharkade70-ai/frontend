@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-const [wallet, setWallet] = useState(0);
+
 const BASE_URL = "https://backend-osy4.onrender.com";
 
 function Redeem() {
@@ -8,7 +8,7 @@ function Redeem() {
 
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
-
+  const [wallet, setWallet] = useState(0);
   const handleRedeem = async () => {
     if (!tokenId) {
       alert("Token missing");
