@@ -31,29 +31,75 @@ function Redeem() {
     alert(data.message);
   };
 
-  return (
-    <div style={{ textAlign: "center", marginTop: "100px" }}>
-      <h2>Redeem Token</h2>
-
-      <p><b>{tokenId}</b></p>
+ return (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      height: "100vh",
+      background: "#f5f5f5"
+    }}
+  >
+    <div
+      style={{
+        background: "white",
+        padding: "30px",
+        borderRadius: "12px",
+        width: "350px",
+        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+        textAlign: "center"
+      }}
+    >
+      <h2 style={{ marginBottom: "20px" }}>🎁 Redeem Reward</h2>
 
       <input
         placeholder="Enter Name"
         onChange={(e) => setName(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "10px",
+          marginBottom: "10px",
+          border: "1px solid #ccc",
+          borderRadius: "5px"
+        }}
       />
-      <br /><br />
 
       <input
         placeholder="Enter Mobile"
         onChange={(e) => setMobile(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "10px",
+          marginBottom: "15px",
+          border: "1px solid #ccc",
+          borderRadius: "5px"
+        }}
       />
-      <br /><br />
 
-      <button onClick={handleRedeem}>
+      <button
+        onClick={handleRedeem}
+        style={{
+          width: "100%",
+          padding: "10px",
+          background: "green",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer"
+        }}
+      >
         Redeem
       </button>
+
+      <h3 style={{ marginTop: "20px" }}>
+        💰 Wallet Balance: ₹0
+      </h3>
+
+      <h3>History</h3>
     </div>
-  );
+  </div>
+);
 }
 
 export default Redeem;
