@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-
+const [wallet, setWallet] = useState(0);
 const BASE_URL = "https://backend-osy4.onrender.com";
 
 function Redeem() {
@@ -28,7 +28,8 @@ function Redeem() {
     });
 
     const data = await res.json();
-    alert(data.message);
+    setWallet(data.wallet);
+alert(data.message);
   };
 
  return (
@@ -93,7 +94,7 @@ function Redeem() {
       </button>
 
       <h3 style={{ marginTop: "20px" }}>
-        💰 Wallet Balance: ₹0
+        💰 Wallet Balance: ₹{wallet}
       </h3>
 
       <h3>History</h3>
