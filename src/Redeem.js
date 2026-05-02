@@ -87,7 +87,7 @@ function Redeem() {
         <h2>🎁 Redeem Reward</h2>
 
         <input
-          placeholder="Enter Name"
+          placeholder="Enter your shop name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           style={{
